@@ -3,13 +3,20 @@ package org.log.slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import ch.qos.logback.classic.PatternLayout;
+
 /**
  * 
  *
  */
 public class App 
 {
+    static {
+    	PatternLayout.defaultConverterMap.put("traceId", TraceIdConverter.class.getName());
+	}
 	static Logger logger = LoggerFactory.getLogger(App.class);
+	
+	
 	
     public static void main( String[] args )
     {
@@ -21,11 +28,13 @@ public class App
          * 
          * 静态绑定Logger
          * 
-         * 
+         * ch.qos.logback.classic.joran.JoranConfigurator
+         * 解析xml配置文件
          * 
          */
-    	
-    	logger.info("msg");
+    	System.out.println((Integer.MAX_VALUE));
+    	long x = System.currentTimeMillis();
+    	logger.info((System.currentTimeMillis()-x)+"ms");
     	
     	/**
     	 * logger日志的打印
