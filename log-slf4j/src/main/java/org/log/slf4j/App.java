@@ -1,17 +1,21 @@
 package org.log.slf4j;
 
+import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.joran.JoranConfigurator;
 import ch.qos.logback.core.subst.Parser;
 import ch.qos.logback.core.subst.Token;
 import ch.qos.logback.core.subst.Tokenizer;
+import ch.qos.logback.core.util.OptionHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import ch.qos.logback.classic.PatternLayout;
+import org.slf4j.impl.StaticLoggerBinder;
 
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 
@@ -69,5 +73,40 @@ public class App
 		//List<Token> tokens = tokenizer.tokenize();
 		Parser parser = new Parser(tokens);
 		parser.parse();
-    }
+
+		//解析属性
+		LoggerContext context = (LoggerContext)StaticLoggerBinder.getSingleton().getLoggerFactory();
+		context.putProperty("jdls","98989");
+		context.putProperty("level","level:${jdls}");
+		context.putProperty("jdls:levelx","89438493");
+		context.putProperty("xxxx","${level:-info}");
+		context.putProperty("xxxxyy","${jdls:levelx:-info:${jdls}}");//-后面跳过包含前面的:
+
+		context.putProperty("xyy","${jdls:levelx:${jdls}}");//不能解析 jdls:levelx
+
+
+
+		String stx = OptionHelper.substVars("${jdls}09090",context,context);
+		String st = OptionHelper.substVars("${jdls:levelx}09090",context,context);
+		String sts = OptionHelper.substVars("${level}09090",context,context);
+		String stsxx = OptionHelper.substVars("${level}:09090",context,context);
+		String sx = OptionHelper.substVars("${xxxx}:09090",context,context);
+
+		String sy = OptionHelper.substVars("${xxxxyy}:09090",context,context);
+		String xxy = OptionHelper.substVars("${xyy}:09090",context,context);
+
+
+
+		//解析规则   ${xxxx}  填充为对应属性 可以嵌套
+		// 特殊字符的解析 : 后面如果是 $ 直接解析为属性
+
+
+		System.out.println(st);
+		System.out.println(sts);
+		System.out.println(stsxx);
+		System.out.println(sx);
+		System.out.println(sy);
+		System.out.println(xxy);
+
+	}
 }
